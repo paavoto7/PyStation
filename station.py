@@ -2,13 +2,14 @@ import requests
 import sys
 from tabulate import tabulate
 from bs4 import BeautifulSoup
+import urllib.parse as urlparse
 
 
 def main():
-    if len(sys.argv) != 2 or sys.argv[1] not in ["1", "2"]:
-        sys.exit("Incorrect")
-    elif sys.argv[1] == "1":
-        table = single()
+    if sys.argv[1] not in ["--s", "--m"]:
+        sys.exit("Incorrect command line argument")
+    elif sys.argv[1] == "--s":
+        table = single(sys.argv[2])
     else:
         table = multi()
     # Print
@@ -17,9 +18,9 @@ def main():
 
 
 # Single game
-def single():
+def single(title):
     # Get the page via requests
-    page = requests.get("https://store.playstation.com/en-fi/product/EP4497-CUSA01439_00-0000000000000001")
+    page = requests.get(search_google(title))
     # Create the soup object
     soup = BeautifulSoup(page.content, "html.parser")
 
@@ -58,6 +59,29 @@ def search_sale(url):
     soup = BeautifulSoup(requests.get(url).content, "html.parser")
     # Return f-string containg the url for the sale
     return f'https://store.playstation.com{soup.find("a", class_="psw-link psw-content-link").get("href")}'
+
+
+# Search Googles programmable search engine
+def search_google(title):
+    # Base url
+    api_url = "https://www.googleapis.com/customsearch/v1"
+    # The search parameters
+    params = {
+        "key": "Insert API key here",
+        "cx": "Insert Search engine ID here",
+        "q": title
+    }
+
+    # Split the url into parts using urllib.parse
+    url_parts = list(urlparse.urlparse(api_url))
+    # Change the parameters field
+    url_parts[4] = urlparse.urlencode(params)
+
+    # Construct the final url
+    final_url = urlparse.urlunparse(url_parts)
+    # 
+    data = requests.get(final_url).json()
+    return data["items"][0]["link"]
 
 
 if __name__ == "__main__":
