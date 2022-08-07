@@ -1,5 +1,6 @@
 from setuptools import setup
 
+
 setup(name="PyStation",
     version="0.1",
     description="Playstation Store price crawler",
