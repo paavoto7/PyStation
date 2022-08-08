@@ -1,14 +1,13 @@
-from .gui import station_gui as gui
-import requests
-import sys
-from tabulate import tabulate
-from bs4 import BeautifulSoup
-import urllib.parse as urlparse
 import argparse
 import re
+import sys
 
-# Import the API key and Programmable search engine ID
-from .constants import key, cx
+import requests
+from bs4 import BeautifulSoup
+from tabulate import tabulate
+
+from .gui import station_gui as gui
+from .search.search_funcs import search_google, search_sale
 
 """This file contains all the necessary functions for the script to be working.
 Main handles the argument parsing of the command line arguments.
@@ -125,32 +124,3 @@ def multi(use_gui=None):
         for i in range(len(title)):
             table.append([title[i].text, ogprice[i].text, discprice[i].text])
         return table
-
-
-# Get the latest sale
-def search_sale():
-    url = "https://store.playstation.com/en-fi/pages/deals"
-    # Create soup object
-    soup = BeautifulSoup(requests.get(url).content, "html.parser")
-    # Return f-string containg the url for the sale
-    return f'https://store.playstation.com{soup.find("a", class_="psw-link psw-content-link").get("href")}'
-
-
-# Search Googles programmable search engine
-def search_google(title):
-    # Base url for the api
-    api_url = "https://www.googleapis.com/customsearch/v1"
-    # The search parameters
-    params = {"key": key, "cx": cx, "lr": "lang_fi", "q": title}
-
-    # Split the url into parts using urllib.parse
-    url_parts = list(urlparse.urlparse(api_url))
-    # Change the parameters field
-    url_parts[4] = urlparse.urlencode(params)
-
-    # Construct the final url
-    final_url = urlparse.urlunparse(url_parts)
-    # Get the search results
-    result = requests.get(final_url).json()
-    # Return the url of the Playstation Store
-    return result["items"][0]["link"]

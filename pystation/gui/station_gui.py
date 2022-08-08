@@ -1,9 +1,9 @@
-from tkinter import *
-from tkinter import ttk
-from PIL import ImageTk, Image
 import io
-import requests
 import re
+from tkinter import *
+
+import requests
+from PIL import Image, ImageTk
 
 
 # Make a class in order to scale

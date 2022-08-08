@@ -9,6 +9,12 @@ The results can either be printed on the command line or displayed on the screen
 - Price (Discounted price only available for the multi options)
 - Image (Only on the gui option)
 
+**Possible Future Development**  
+- Description
+- Multiple single game searches
+- Better code organization
+- Publishing this as an API to PYPI
+
 ## **Usage**
     python3 -m pystation [options] [args]
     Or
@@ -27,6 +33,11 @@ After creating one, you should be able to get the key and the ID/cx and then pas
 
     key=...
     cx=...
+
+Or alternatively you could create environmental variables:
+
+    export API_KEY=...
+    export CX=...
 
 ### **A few notes about the implementations**
 

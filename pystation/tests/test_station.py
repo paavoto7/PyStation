@@ -1,4 +1,5 @@
-from pystation.station import single, multi, search_google, search_sale
+from pystation.station import single, multi
+from pystation.search.search_funcs import search_google, search_sale
 import pytest
 
 
