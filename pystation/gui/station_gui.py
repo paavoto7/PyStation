@@ -62,7 +62,8 @@ class Navs:
 def display(url, price, full_title):
     # Change the image width to 1920 and thumbnail false in the url
     new_url = url.replace(
-        str(re.search(r"w=[0-9]+\&thumb=true", url).group()), "w=1920&thumb=false"
+        str(re.search(r"w=[0-9]+\&thumb=[true|false]", url).group()),
+        "w=1920&thumb=false",
     )
     # Get the image
     image = requests.get(new_url).content
@@ -70,7 +71,7 @@ def display(url, price, full_title):
     # Create the Tk object
     root = Tk()
     # Assign a title
-    root.title("Games")
+    root.title("Game")
     # Create the Game object
     img = Game(image, price, full_title).image
 
@@ -89,7 +90,7 @@ def multi_display(table):
         games.append(Game(img, game[1], game[0]))
 
     # Assign a title
-    root.title("Games")
+    root.title("Discounted Games")
 
     imagelab = Label(
         root,
@@ -104,12 +105,12 @@ def multi_display(table):
     navs = Navs(len(games) - 1)
 
     btnfr = Button(
-        root, text="Next Image", command=lambda: navs.next_img(imagelab, games)
+        root, text="Next Game", command=lambda: navs.next_img(imagelab, games)
     )
     btnfr.pack(side=RIGHT)
 
     btnpr = Button(
-        root, text="Previous Image", command=lambda: navs.previous_img(imagelab, games)
+        root, text="Previous Game", command=lambda: navs.previous_img(imagelab, games)
     )
     btnpr.pack(side=LEFT)
 

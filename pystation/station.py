@@ -1,73 +1,23 @@
-import argparse
 import re
 import sys
 
 import requests
 from bs4 import BeautifulSoup
-from tabulate import tabulate
 
 from .gui import station_gui as gui
-from .search.search_funcs import search_google, search_sale
+from .search.search_funcs import search_store
 
 """This file contains all the necessary functions for the script to be working.
-Main handles the argument parsing of the command line arguments.
-THe functions could be split into multiple files, but that is for the future for now at least.
 """
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Playstation Store price crawler")
-
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
-        "-s",
-        "--single",
-        help="Get a single game price and information.",
-        type=str,
-        nargs="+",
-    )
-    group.add_argument(
-        "-gs",
-        "--gui_single",
-        help="Same as single but with gui and picture",
-        type=str,
-        nargs="+",
-    )
-    group.add_argument(
-        "-m", "--multi", help="Get all the sale prices and titles", action="store_true"
-    )
-    group.add_argument(
-        "-gm",
-        "--gui_multi",
-        help="Same as multi but with gui and picture",
-        action="store_true",
-    )
-
-    args = parser.parse_args()
-
-    if args.single:
-        table = single(args.single)
-    elif args.gui_single:
-        table = single(args.gui_single, True)
-        sys.exit(0)
-    elif args.gui_multi:
-        table = gui.multi_display(multi(True))
-        sys.exit(0)
-    elif args.multi:
-        table = multi()
-    else:
-        sys.exit("Something went wrong. Refer to the help.")
-    # Print
-    print(tabulate(table, headers=["Title", "Original price", "Discounted price"]))
-
-
 # Single game
-def single(title, use_gui=None):
+def single(title, currency="us", use_gui=None):
+    url = f"https://store.playstation.com/en-{currency}/search/{title}"
     # Get the page via requests
-    page = requests.get(search_google(title))
+    page = requests.get(search_store(url))
     # Create the soup object
     soup = BeautifulSoup(page.content, "html.parser")
-
     try:
         # Find the price
         price = soup.find("span", class_="psw-t-title-m").string
@@ -90,8 +40,9 @@ def single(title, use_gui=None):
 
 # Sale
 def multi(use_gui=None):
+    search_url = "https://store.playstation.com/en-us/pages/deals"
     # Get the page via requests
-    page = requests.get(search_sale())
+    page = requests.get(search_store(search_url))
     # Create the soup object
     soup = BeautifulSoup(page.content, "html.parser")
 

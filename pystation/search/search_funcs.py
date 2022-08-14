@@ -1,52 +1,35 @@
-import os
+import re
 import sys
-import urllib.parse as urlparse
 
 import requests
 from bs4 import BeautifulSoup
 
-# Import the API key and Programmable search engine ID
-try:
-    # Try if environmental variables set
-    key = os.environ["API_KEY"]
-    cx = os.environ["CX"]
-except KeyError:
-    # If no env variables, try to import from constants
-    try:
-        from ..constants import cx, key
-    except ModuleNotFoundError:
-        sys.exit("Neither environmental variables nor the constants.py file found.")
-
 
 # Get the latest sale
-def search_sale():
-    url = "https://store.playstation.com/en-fi/pages/deals"
+def search_store(url):
+    # Pass a user agent so the server will serve the proper site
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+    }
     # Create soup object
-    soup = BeautifulSoup(requests.get(url).content, "html.parser")
+    soup = BeautifulSoup(requests.get(url, headers=headers).content, "html.parser")
+
+    # Assure that the search wasn't empty
+    if soup.find("div", attrs={"data-qa": "search-no-results"}):
+        sys.exit("No search results found. Try specifying the search query.")
+
+    #
+    href = search_game(soup.find_all("a", class_="psw-link psw-content-link"))
     # Return f-string containg the url for the sale
-    return f'https://store.playstation.com{soup.find("a", class_="psw-link psw-content-link").get("href")}'
+    return f"https://store.playstation.com{href}"
 
 
-# Search Googles programmable search engine
-def search_google(title):
-    # Base url for the api
-    api_url = "https://www.googleapis.com/customsearch/v1"
-    # The search parameters
-    params = {"key": key, "cx": cx, "lr": "lang_fi", "q": title}
-
-    # Split the url into parts using urllib.parse
-    url_parts = list(urlparse.urlparse(api_url))
-    # Change the parameters field
-    url_parts[4] = urlparse.urlencode(params)
-
-    # Construct the final url
-    final_url = urlparse.urlunparse(url_parts)
-    # Get the search results
-    result = requests.get(final_url).json()
-
-    # If error happened in the search
-    if "error" in result:
-        sys.exit(f"{result['error']['message']} Refer to the README.")
-
-    # Return the url of the Playstation Store
-    return result["items"][0]["link"]
+def search_game(game_tags, i=0):
+    if not game_tags[i].find(
+        "span",
+        class_="psw-product-tile__product-type psw-t-bold psw-t-size-1 psw-t-truncate-1 psw-c-t-2 psw-t-uppercase psw-m-b-1",
+        attrs={f"'data-qa':'{re.compile(r'search#productTile[0-9]{2}#product-type')}'"},
+    ):
+        return f"{game_tags[i].get('href')}"
+    else:
+        return search_game(game_tags, i + 1)

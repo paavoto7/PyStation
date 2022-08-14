@@ -2,42 +2,53 @@
 
 PyStation is a Playstation Store crawler that lets the users to gather information about a specific game or a number of discounted games.  
 
-The results can either be printed on the command line or displayed on the screen with addition of the games images.
+PyStation can either be used as a command line tool or an API.
+The CLI results can either be printed on the command line or displayed on the screen with addition of the games images.
 
-**Current Features**
+## **Installation**
+
+PyStation in not yet available on PyPI.
+Forking the project is always an option.
+
+## **Current Features**
 - Title
 - Price (Discounted price only available for the multi options)
 - Image (Only on the gui option)
 
 **Possible Future Development**  
-- Description
+- Description and Publisher of the game
 - Multiple single game searches
 - Better code organization
-- Publishing this as an API to PYPI
+- Publishing as a CLI tool and API to PYPI
+- Improve the gui
+    - Main menu
+    - More beautiful interface
+    - etc. 
 
-## **Usage**
+## **CLI Tool Usage**
+
     python3 -m pystation [options] [args]
-    Or
-    python3 pystation-runner.py [options] [args]
 
-PyStation is used from the command line.  
-Run -h as option to see the full usage.
+    Options:
 
-**Programmable Search Engine**  
+    -h, --help            show this help message and exit
+    -s SINGLE [SINGLE ...], --single SINGLE [SINGLE ...]
+                            Get a single game price and information.
+    -gs GUI_SINGLE [GUI_SINGLE ...], --gui_single GUI_SINGLE [GUI_SINGLE ...]
+                            Same as single but with gui and picture
+    -m, --multi           Get all the sale prices and titles
+    -gm, --gui_multi      Same as multi but with gui and picture
 
-To create your own Google's programmable search engine, refer to this site: https://developers.google.com/custom-search/v1/overview
-  
-While creating the engine, the site to search is: **store.playstation.com/*** <sub>The star representing all subdomains</sub>  
-The reason everyone has to create their own engine is that the free version only has 100 free queries per day.  
-After creating one, you should be able to get the key and the ID/cx and then paste them into the constants.py file:
+Using the gui feature doesn't have any other benefit than seeing the images.
 
-    key=...
-    cx=...
+## **API Usage**
 
-Or alternatively you could create environmental variables:
+The *single* and *multi* functions in the station.py file are pretty much the only ones that can be used as an API.
 
-    export API_KEY=...
-    export CX=...
+    from pystation.station import single, multi
+    single(title) -> [[full title, price]]
+    multi() -> [[full title, og price, discounted price] * x]
+
 
 ### **A few notes about the implementations**
 
@@ -45,4 +56,8 @@ First I was only going to do CLI but as the project went on, I decided to expand
 
 All external library dependancies were chosen for their ease and fit for the project. Usage of too sophisticated libraries would've been a waste of time and resources.
 
-Google has also created a [python library for the programmable search engine](https://github.com/googleapis/google-api-python-client). I decided not to use it but the code shouldn't be too hard to modify if felt like it.
+Both the single and the multi funtion uses the search_store function.
+It's unnecessary for the multi to be checked for no results or be passed through the search_game function.
+It is made this way as it doesn't add too much time and saves a few lines of redundant code.
+
+All files are formatted using black.
