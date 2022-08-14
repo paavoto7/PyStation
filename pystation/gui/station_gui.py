@@ -61,31 +61,36 @@ class Navs:
         event.image = img
 
 
+# Start the gui and check where the function call came from
 def main_app(*args):
     root = Tk()
     if inspect.stack()[1][3] == "single":
         Display(root, *args)
         root.mainloop()
 
-    elif inspect.stack()[1][3] == "multi":
-        #Multi_display(root, *args)
+    elif inspect.stack()[1][3] == "main":
+        Multi_display(root, *args)
         root.mainloop()
     else:
-        sys.exit("MOIIOIO1")
+        sys.exit("Invalid function call.")
 
+
+# Single game display
 class Display:
     def __init__(self, master, url, price, full_title):
         self.master = master
 
         self.game = Game(self.image(url), price, full_title)
-    
-        self.img = self.game.image
 
         master.title("Game")
 
         imagelab = Label(
-            master, image=self.img, text=f"{full_title}: {price}", compound=BOTTOM
+            master,
+            image=self.game.image,
+            text=f"{full_title}: {price}",
+            compound=BOTTOM,
         )
+        imagelab.img = self.game.image
         imagelab.config(font=("Times", 25, "bold italic"))
         imagelab.grid(row=0, column=0)
 
@@ -96,29 +101,14 @@ class Display:
             "w=1920&thumb=false",
         )
         # Get the image
+        print(new_url)
         return requests.get(new_url).content
 
-    """
 
-    # Create the Tk object
-    root = Tk()
-    # Assign a title
-    root.title("Game")
-    # Create the Game object
-    
-
-    imagelab = Label(root, image=img, text=f"{full_title}: {price}", compound=BOTTOM)
-    imagelab.config(font=("Times", 25, "bold italic"))
-    imagelab.grid(row=0, column=0)
-
-    return root.mainloop()
-"""
-
-
+# Discountd games display
 class Multi_display:
-    
     def __init__(self, master, table):
-        
+
         games = list()
         for game in table[0:]:
             img = requests.get(game[3]).content
@@ -127,27 +117,26 @@ class Multi_display:
         # Assign a title
         master.title("Discounted Games")
 
-    """imagelab = Label(
-        root,
-        image=games[0].image,
-        text=f"{games[0].full_title}: {games[0].price}",
-        compound=BOTTOM,
-    )
-    imagelab.config(font=("Times", 25, "bold italic"))
-    imagelab.pack(fill=BOTH, expand=True)
+        imagelab = Label(
+            master,
+            image=games[0].image,
+            text=f"{games[0].full_title}: {games[0].price}",
+            compound=BOTTOM,
+        )
+        imagelab.config(font=("Times", 25, "bold italic"))
+        imagelab.pack(fill=BOTH, expand=True)
 
-    # Create a Navs object
-    navs = Navs(len(games) - 1)
+        # Create a Navs object
+        navs = Navs(len(games) - 1)
 
-    btnfr = Button(
-        root, text="Next Game", command=lambda: navs.next_img(imagelab, games)
-    )
-    btnfr.pack(side=RIGHT)
+        btnfr = Button(
+            master, text="Next Game", command=lambda: navs.next_img(imagelab, games)
+        )
+        btnfr.pack(side=RIGHT)
 
-    btnpr = Button(
-        root, text="Previous Game", command=lambda: navs.previous_img(imagelab, games)
-    )
-    btnpr.pack(side=LEFT)
-
-    root.mainloop()
-"""
+        btnpr = Button(
+            master,
+            text="Previous Game",
+            command=lambda: navs.previous_img(imagelab, games),
+        )
+        btnpr.pack(side=LEFT)

@@ -25,11 +25,15 @@ def search_store(url):
 
 
 def search_game(game_tags, i=0):
-    if not game_tags[i].find(
-        "span",
-        class_="psw-product-tile__product-type psw-t-bold psw-t-size-1 psw-t-truncate-1 psw-c-t-2 psw-t-uppercase psw-m-b-1",
-        attrs={f"'data-qa':'{re.compile(r'search#productTile[0-9]{2}#product-type')}'"},
-    ):
+    if not (
+        tag := game_tags[i].find(
+            "span",
+            class_="psw-product-tile__product-type psw-t-bold psw-t-size-1 psw-t-truncate-1 psw-c-t-2 psw-t-uppercase psw-m-b-1",
+            attrs={
+                f"'data-qa':'{re.compile(r'search#productTile[0-9]{2}#product-type')}'"
+            },
+        )
+    ) or tag.string in ["Pre-Order", "Game Bundle"]:
         return f"{game_tags[i].get('href')}"
     else:
         return search_game(game_tags, i + 1)

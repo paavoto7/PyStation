@@ -5,7 +5,7 @@ from tabulate import tabulate
 
 from ..gui.station_gui import main_app
 
-from ..gui import Multi_display
+# from ..gui import Multi_display
 from ..station import multi, single
 
 
@@ -54,12 +54,12 @@ def main():
         sys.exit(0)
 
     elif args.gui_multi:
-        table = main_app(multi(True))
+        table = main_app(multi(args.currency, True))
         sys.exit(0)
 
     elif args.multi:
-        table = multi()
-        
+        table = multi(args.currency)
+
     else:
         sys.exit("Something went wrong. Refer to the help.")
     # Print using tabulate

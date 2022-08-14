@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from .gui import station_gui as gui
+from .search.highest_price import all_prices
 from .search.search_funcs import search_store
 
 """This file contains all the necessary functions for the script to be working.
@@ -18,13 +19,17 @@ def single(title, currency="us", use_gui=None):
     page = requests.get(search_store(url))
     # Create the soup object
     soup = BeautifulSoup(page.content, "html.parser")
+
     try:
-        # Find the price
-        price = soup.find("span", class_="psw-t-title-m").string
-        # Find the title
-        full_title = soup.find("h1").string
+        disc, price = all_prices(
+            soup.find(
+                class_="psw-c-bg-card-1 psw-p-y-7 psw-p-x-8 psw-m-sub-x-8 psw-m-sub-x-6@below-tablet-s psw-p-x-6@below-tablet-s"
+            )
+        )
     except AttributeError:
         sys.exit("The page seems to be invalid. Try specifying the search query.")
+
+    full_title = soup.find("h1").string
 
     # If gui is provided
     if use_gui == True:
@@ -35,12 +40,15 @@ def single(title, currency="us", use_gui=None):
         # Display the image
         return gui.main_app(image, price, full_title)
     # Make table
-    return [[full_title, price]]
+    if disc == None:
+        return [[full_title, price]]
+    else:
+        return [[full_title, price, disc]]
 
 
 # Sale
-def multi(use_gui=None):
-    search_url = "https://store.playstation.com/en-us/pages/deals"
+def multi(currency="us", use_gui=None):
+    search_url = f"https://store.playstation.com/en-{currency}/pages/deals"
     # Get the page via requests
     page = requests.get(search_store(search_url))
     # Create the soup object
@@ -48,9 +56,9 @@ def multi(use_gui=None):
 
     try:
         # Get the original price of the game
-        ogprice = soup.find_all("span", class_="psw-m-r-3")
+        discprice = soup.find_all("span", class_="psw-m-r-3")
         # Get the discounted price of the game
-        discprice = soup.find_all(lambda tag: tag.get("class") == ["psw-c-t-2"])
+        ogprice = soup.find_all(lambda tag: tag.get("class") == ["psw-c-t-2"])
         # Get the title of the game
         title = soup.find_all(
             "span", class_="psw-t-body psw-c-t-1 psw-t-truncate-2 psw-m-b-2"
