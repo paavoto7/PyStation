@@ -33,7 +33,7 @@ def single(title, currency="us", use_gui=None):
             "img", class_="psw-blur psw-right-top-third psw-l-fit-cover"
         ).get("src")
         # Display the image
-        return gui.display(image, price, full_title)
+        return gui.main_app(image, price, full_title)
     # Make table
     return [[full_title, price]]
 

@@ -1,5 +1,7 @@
+import inspect
 import io
 import re
+import sys
 from tkinter import *
 
 import requests
@@ -59,40 +61,73 @@ class Navs:
         event.image = img
 
 
-def display(url, price, full_title):
-    # Change the image width to 1920 and thumbnail false in the url
-    new_url = url.replace(
-        str(re.search(r"w=[0-9]+\&thumb=[true|false]", url).group()),
-        "w=1920&thumb=false",
-    )
-    # Get the image
-    image = requests.get(new_url).content
+def main_app(*args):
+    root = Tk()
+    if inspect.stack()[1][3] == "single":
+        Display(root, *args)
+        root.mainloop()
+
+    elif inspect.stack()[1][3] == "multi":
+        #Multi_display(root, *args)
+        root.mainloop()
+    else:
+        sys.exit("MOIIOIO1")
+
+class Display:
+    def __init__(self, master, url, price, full_title):
+        self.master = master
+
+        self.game = Game(self.image(url), price, full_title)
+    
+        self.img = self.game.image
+
+        master.title("Game")
+
+        imagelab = Label(
+            master, image=self.img, text=f"{full_title}: {price}", compound=BOTTOM
+        )
+        imagelab.config(font=("Times", 25, "bold italic"))
+        imagelab.grid(row=0, column=0)
+
+    def image(self, url):
+        # Change the image width to 1920 and thumbnail false in the url
+        new_url = url.replace(
+            str(re.search(r"w=[0-9]+\&thumb=true", url).group()),
+            "w=1920&thumb=false",
+        )
+        # Get the image
+        return requests.get(new_url).content
+
+    """
 
     # Create the Tk object
     root = Tk()
     # Assign a title
     root.title("Game")
     # Create the Game object
-    img = Game(image, price, full_title).image
+    
 
     imagelab = Label(root, image=img, text=f"{full_title}: {price}", compound=BOTTOM)
     imagelab.config(font=("Times", 25, "bold italic"))
     imagelab.grid(row=0, column=0)
 
     return root.mainloop()
+"""
 
 
-def multi_display(table):
-    root = Tk()
-    games = list()
-    for game in table[0:]:
-        img = requests.get(game[3]).content
-        games.append(Game(img, game[1], game[0]))
+class Multi_display:
+    
+    def __init__(self, master, table):
+        
+        games = list()
+        for game in table[0:]:
+            img = requests.get(game[3]).content
+            games.append(Game(img, game[1], game[0]))
 
-    # Assign a title
-    root.title("Discounted Games")
+        # Assign a title
+        master.title("Discounted Games")
 
-    imagelab = Label(
+    """imagelab = Label(
         root,
         image=games[0].image,
         text=f"{games[0].full_title}: {games[0].price}",
@@ -114,4 +149,5 @@ def multi_display(table):
     )
     btnpr.pack(side=LEFT)
 
-    return root.mainloop()
+    root.mainloop()
+"""

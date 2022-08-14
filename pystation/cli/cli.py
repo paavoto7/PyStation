@@ -3,7 +3,9 @@ import sys
 
 from tabulate import tabulate
 
-from ..gui import multi_display
+from ..gui.station_gui import main_app
+
+from ..gui import Multi_display
 from ..station import multi, single
 
 
@@ -46,14 +48,18 @@ def main():
 
     if args.single:
         table = single(args.single, args.currency)
+
     elif args.gui_single:
-        table = single(args.gui_single, True)
+        table = single(args.gui_single, args.currency, True)
         sys.exit(0)
+
     elif args.gui_multi:
-        table = multi_display(multi(True))
+        table = main_app(multi(True))
         sys.exit(0)
+
     elif args.multi:
         table = multi()
+        
     else:
         sys.exit("Something went wrong. Refer to the help.")
     # Print using tabulate
