@@ -101,7 +101,6 @@ class Display:
             "w=1920&thumb=false",
         )
         # Get the image
-        print(new_url)
         return requests.get(new_url).content
 
 

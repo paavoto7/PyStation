@@ -4,13 +4,7 @@ import re
 def all_prices(soup):
     prices = soup.find_all(string=re.compile(r"[$|€|£|\w][0-9]+[\.|,][0-9]+"))
 
-    try:
-        text_price = soup.find(
-            attrs={"data-qa": "mfeCtaMain#offer1#finalPrice", "data-qa": "mfeCtaMain#offer0#finalPrice"},
-            string=re.compile(r"[a-zA-Z]"),
-        ).text
-    except AttributeError:
-        text_price = None
+    offer_price = offer(soup)
 
     unique = []
     for price in prices:
@@ -19,11 +13,49 @@ def all_prices(soup):
         else:
             continue
 
-    # unique = sorted(unique, key=lambda price: re.search(r"\w+[\.|,]\w+", price).group(0))
-
-    if len(unique) > 1:
+    if len(unique) > 1 and offer_price == None:
+        unique = sorted(
+            unique, key=lambda price: re.search(r"\w+[\.|,]\w+", price).group(0)
+        )
         return unique[0], unique[-1]
-    elif text_price != None:
-        return text_price, unique[0]
+
+    elif offer_price != None and offer_price not in unique:
+        if len(unique) > 0:
+            return offer_price, unique[0]
+        else:
+            return offer_price, None
+
     else:
         return None, unique[0]
+
+
+def offer(soup):
+    try:
+        offer_price = soup.find(
+            attrs={"data-qa": "mfeCtaMain#offer1#finalPrice"},
+        ).string
+    except AttributeError:
+        try:
+            offer_price = soup.find(
+                attrs={"data-qa": "mfeCtaMain#offer0#finalPrice"},
+            ).string
+        except AttributeError:
+            return None
+
+    try:
+        condition = soup.find(
+            "span",
+            string=re.compile(r"[+]*PlayStation[+]*"),
+            attrs={"data-qa": re.compile(r"mfeCtaMain#offer[0-9]+#discountInfo")},
+        ).string
+    except AttributeError:
+        condition = ""
+
+    if tier := re.search(r"(Premium|Extra)", condition):
+        return f"{offer_price} with PlayStation Plus {tier.group(0)}"
+
+    elif "PlayStation Plus" in condition:
+        return f"{offer_price} with PlayStation Plus"
+
+    else:
+        return offer_price

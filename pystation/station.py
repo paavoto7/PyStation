@@ -20,6 +20,7 @@ def single(title, currency="us", use_gui=None):
     # Create the soup object
     soup = BeautifulSoup(page.content, "html.parser")
 
+    # Search the lowest and highest price
     try:
         disc, price = all_prices(
             soup.find(
@@ -29,7 +30,8 @@ def single(title, currency="us", use_gui=None):
     except AttributeError:
         sys.exit("The page seems to be invalid. Try specifying the search query.")
 
-    full_title = soup.find("h1").string
+    # Add the items to a list in order to use list comprehension later
+    items = [soup.find("h1").string, price, disc]
 
     # If gui is provided
     if use_gui == True:
@@ -37,13 +39,12 @@ def single(title, currency="us", use_gui=None):
         image = soup.find(
             "img", class_="psw-blur psw-right-top-third psw-l-fit-cover"
         ).get("src")
+
         # Display the image
-        return gui.main_app(image, price, full_title)
-    # Make table
-    if disc == None:
-        return [[full_title, price]]
-    else:
-        return [[full_title, price, disc]]
+        return gui.main_app(image, price, items[0])
+
+    # Populate the list using list comprehension. Reverse because title is appended after.
+    return [[item for item in items if item != None]]
 
 
 # Sale

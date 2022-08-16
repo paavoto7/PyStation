@@ -3,7 +3,8 @@ import sys
 
 import pytest
 
-from ..__main__ import main
+from ..cli.cli import main
+from ..search.highest_price import all_prices
 from ..search.search_funcs import search_store
 from ..station import multi, single
 
