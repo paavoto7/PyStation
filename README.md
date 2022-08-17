@@ -41,13 +41,22 @@ Forking the project is always an option.
 
 Using the gui feature doesn't have any other benefit than seeing the images.
 
+In order to get your desired currency for the prices, you need to specify the country.  
+It is specified by adding **-c country** after the options and args.  
+
+    For e.g.
+    python3 -m pystation -s minecraft -c germany
+
+Some languages that don't use letters may have unexpectable behavior as the text capturing is done for lating alphabets.
+
 ## **API Usage**
 
-The *single* and *multi* functions in the station.py file are pretty much the only ones that can be used as an API.
+The *single* and *multi* functions in the station.py file are the most useful as the other ones are mainly helpers for these two.  
+The country here is just any country name e.g. Finland.
 
     from pystation.station import single, multi
-    single(title) -> [[full title, price]]
-    multi() -> [[full title, og price, discounted price] * x]
+    single(title, [country]) -> [[full title, price]]
+    multi([country]) -> [[full title, og price, discounted price] * x]
 
 
 ### **A few notes about the implementations**

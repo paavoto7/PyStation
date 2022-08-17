@@ -2,11 +2,14 @@ import re
 import sys
 
 import pytest
+from bs4 import BeautifulSoup
 
 from ..cli.cli import main
+from ..funcs.currency import store
 from ..search.highest_price import all_prices
 from ..search.search_funcs import search_store
 from ..station import multi, single
+from ..gui import Display
 
 """Regex is used here because the country and language are not necessarily the same for all users.
 The title and the price especially may also differ so anything hardcoded won't do here."""
@@ -30,9 +33,30 @@ def test_single():
 
 def test_multi():
     assert len(multi()) > 1
-    assert type(multi()[3][0]) == str
+    assert type(multi()[0][0]) == str
 
 
 def test_invalid_game():
     with pytest.raises(SystemExit):
         single("halo")
+
+
+def test_price():
+    assert all_prices(
+        BeautifulSoup(
+            '<span data-qa="mfeCtaMain#offer0#finalPrice" class="psw-t-title-m psw-m-r-4">€9,99</span>',
+            "html.parser",
+        )
+    ) == (None, "€9,99")
+    assert all_prices(
+        BeautifulSoup(
+            '<span data-qa="mfeCtaMain#offer0#finalPrice" class="psw-t-title-m psw-m-r-4">€9,99</span><span data-qa="mfeCtaMain#offer1#finalPrice" class="psw-t-title-m psw-m-r-4">Free</span>',
+            "html.parser",
+        )
+    ) == ("Free", "€9,99")
+
+
+def test_store():
+    assert store("Finland") == "en-fi"
+    assert store("Brasil") == "pt-br"
+    assert store("Great Britain") == "en-gb"

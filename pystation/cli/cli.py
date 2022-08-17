@@ -3,9 +3,8 @@ import sys
 
 from tabulate import tabulate
 
+from ..funcs.currency import store
 from ..gui.station_gui import main_app
-
-# from ..gui import Multi_display
 from ..station import multi, single
 
 
@@ -39,26 +38,28 @@ def main():
 
     parser.add_argument(
         "-c,",
-        "--currency",
+        "--country",
         help="Set country to specify currency.",
-        default="us",
+        default="United States",
     )
 
     args = parser.parse_args()
 
+    store_code = store(args.country)
+
     if args.single:
-        table = single(args.single, args.currency)
+        table = single(args.single, store_code)
 
     elif args.gui_single:
-        table = single(args.gui_single, args.currency, True)
+        table = single(args.gui_single, store_code, True)
         sys.exit(0)
 
     elif args.gui_multi:
-        table = main_app(multi(args.currency, True))
+        table = main_app(multi(store_code, True))
         sys.exit(0)
 
     elif args.multi:
-        table = multi(args.currency)
+        table = multi(store_code)
 
     else:
         sys.exit("Something went wrong. Refer to the help.")

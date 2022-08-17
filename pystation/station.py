@@ -4,17 +4,14 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 
-from .gui import station_gui as gui
-from .search.highest_price import all_prices
-from .search.search_funcs import search_store
-
-"""This file contains all the necessary functions for the script to be working.
-"""
+from pystation.gui import station_gui as gui
+from pystation.search.highest_price import all_prices
+from pystation.search.search_funcs import search_store
 
 
 # Single game
-def single(title, currency="us", use_gui=None):
-    url = f"https://store.playstation.com/en-{currency}/search/{title}"
+def single(title, country="en-us", use_gui=None):
+    url = f"https://store.playstation.com/{country}/search/{title}"
     # Get the page via requests
     page = requests.get(search_store(url))
     # Create the soup object
@@ -48,8 +45,8 @@ def single(title, currency="us", use_gui=None):
 
 
 # Sale
-def multi(currency="us", use_gui=None):
-    search_url = f"https://store.playstation.com/en-{currency}/pages/deals"
+def multi(country="en-us", use_gui=None):
+    search_url = f"https://store.playstation.com/{country}/pages/deals"
     # Get the page via requests
     page = requests.get(search_store(search_url))
     # Create the soup object

@@ -2,7 +2,7 @@ import re
 
 
 def all_prices(soup):
-    prices = soup.find_all(string=re.compile(r"[$|€|£|\w][0-9]+[\.|,][0-9]+"))
+    prices = soup.find_all(string=re.compile(r"\D*[0-9]+[\.|,][0-9]+"))
 
     offer_price = offer(soup)
 
@@ -13,7 +13,7 @@ def all_prices(soup):
         else:
             continue
 
-    if len(unique) > 1 and offer_price == None:
+    if len(unique) > 1:
         unique = sorted(
             unique, key=lambda price: re.search(r"\w+[\.|,]\w+", price).group(0)
         )
