@@ -19,13 +19,14 @@ def search_store(url):
         sys.exit("No search results found. Try specifying the search query.")
 
     #
-    href = search_game(soup.find_all("a", class_="psw-link psw-content-link"))
+    return soup
     # Return f-string containg the url for the sale
-    return f"https://store.playstation.com{href}"
 
 
 # Check that the search result is a game
-def search_game(game_tags):
+def search_game(url):
+    soup = search_store(url)
+    game_tags = soup.find_all("a", class_="psw-link psw-content-link")
     for i in range(len(game_tags)):
         if not (
             tag := game_tags[i].find(
@@ -36,8 +37,17 @@ def search_game(game_tags):
                 },
             )
         ) or tag.string in ["Pre-Order", "Game Bundle"]:
-            return f"{game_tags[i].get('href')}"
+            return f"https://store.playstation.com{game_tags[i].get('href')}"
         else:
             continue
 
     sys.exit("Page seems to be invalid. Try specifying the search query.")
+
+
+def search_deal(url):
+    soup = search_store(url)
+    href = soup.find(
+        "a",
+        class_="psw-link psw-quick-action-link psw-button psw-b-0 psw-t-button psw-l-line-center psw-button-sizing psw-button-sizing--medium psw-button-sizing--icon-only psw-quick-action-button",
+    ).get("href")
+    return f"https://store.playstation.com{href}"

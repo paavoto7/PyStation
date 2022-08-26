@@ -6,14 +6,14 @@ from bs4 import BeautifulSoup
 
 from pystation.gui import station_gui as gui
 from pystation.search.highest_price import all_prices
-from pystation.search.search_funcs import search_store
+from pystation.search.search_funcs import search_deal, search_game, search_store
 
 
 # Single game
 def single(title, country="en-us", use_gui=None):
     url = f"https://store.playstation.com/{country}/search/{title}"
     # Get the page via requests
-    page = requests.get(search_store(url))
+    page = requests.get(search_game(url))
     # Create the soup object
     soup = BeautifulSoup(page.content, "html.parser")
 
@@ -48,7 +48,7 @@ def single(title, country="en-us", use_gui=None):
 def multi(country="en-us", use_gui=None):
     search_url = f"https://store.playstation.com/{country}/pages/deals"
     # Get the page via requests
-    page = requests.get(search_store(search_url))
+    page = requests.get(search_deal(search_url))
     # Create the soup object
     soup = BeautifulSoup(page.content, "html.parser")
 
