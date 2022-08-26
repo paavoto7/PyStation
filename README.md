@@ -7,8 +7,11 @@ The CLI results can either be printed on the command line or displayed on the sc
 
 ## **Installation**
 
-PyStation in not yet available on PyPI.
-Forking the project is always an option.
+    pip install PyPlayStation
+
+The name of the PyPI project is different because the name *PyStation* was already taken.
+
+Forking the project is always an option too.
 
 ## **Current Features**
 - Title
@@ -27,7 +30,7 @@ Forking the project is always an option.
 
 ## **CLI Tool Usage**
 
-    python3 -m pystation [options] [args]
+    pystation [options] [args]
 
     Options:
 
@@ -45,7 +48,7 @@ In order to get your desired currency for the prices, you need to specify the co
 It is specified by adding **-c country** after the options and args.  
 
     For e.g.
-    python3 -m pystation -s minecraft -c germany
+    pystation -s minecraft -c germany
 
 Some languages that don't use letters may have unexpectable behavior as the text capturing is done for lating alphabets.
 

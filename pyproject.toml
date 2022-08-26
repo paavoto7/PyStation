@@ -10,12 +10,12 @@ readme = "README.md"
 authors = [
     { name="Paavo Westerlund"}
 ]
-license = "MIT"
+license = {text = "MIT"}
 classifiers=[
     "Development Status :: 2 - Pre-Alpha",
     'Programming Language :: Python :: 3',
 ]
-keywords = ["Playstation", "Store"]
+keywords = ["Playstation", "Store", "game price"]
 dependencies = [
     "beautifulsoup4>=4.11.1",
     "Pillow>=9.2.0",
