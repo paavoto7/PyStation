@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from pystation.gui import station_gui as gui
 from pystation.search.highest_price import all_prices
-from pystation.search.search_funcs import search_deal, search_game, search_store
+from pystation.search.search_funcs import search_deal, search_game
 
 
 # Single game
