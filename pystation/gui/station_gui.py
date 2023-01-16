@@ -2,10 +2,15 @@ import inspect
 import io
 import re
 import sys
-from tkinter import *
+try:
+    from tkinter import *
+    from PIL import ImageTk
+except ModuleNotFoundError:
+    print("Unable to find the module 'tkinter'.\nPlease refer to this site https://tkdocs.com/tutorial/install.html")
+    pass
 
 import requests
-from PIL import Image, ImageTk
+from PIL import Image
 
 
 # Make a class in order to scale
