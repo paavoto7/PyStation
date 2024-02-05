@@ -1,3 +1,4 @@
+**!! As of now, some things are broken and don't seem to work as expected. Will be fixed when enough free time is available.**
 # **PyStation**
 
 PyStation is a Playstation Store crawler that lets the users to gather information about a specific game or a number of discounted games.  
