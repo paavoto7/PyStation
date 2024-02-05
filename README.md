@@ -6,6 +6,7 @@ PyStation can either be used as a command line tool or an API.
 The CLI results can either be printed on the command line or displayed on the screen with addition of the games images.
 
 ## **Installation**
+**!! The package on PyPI doesn't have the updated requirements**
 
     pip install PyPlayStation
 
