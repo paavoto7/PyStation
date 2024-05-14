@@ -2,7 +2,7 @@ import re
 
 
 def all_prices(soup):
-    prices = soup.find_all(string=re.compile(r"\D*[0-9]+[\.|,][0-9]+"))
+    prices = soup.find_all(string=re.compile(r"\D?[0-9]+[\.|,][0-9]+\D?"))
 
     offer_price = offer(soup)
 
@@ -10,8 +10,6 @@ def all_prices(soup):
     for price in prices:
         if price.text not in unique and price.text != "":
             unique.append(price.text)
-        else:
-            continue
 
     if len(unique) > 1:
         unique = sorted(

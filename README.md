@@ -6,15 +6,6 @@ PyStation is a Playstation Store crawler that lets the users to gather informati
 PyStation can either be used as a command line tool or an API.
 The CLI results can either be printed on the command line or displayed on the screen with addition of the games images.
 
-## **Installation**
-**!! The package on PyPI doesn't have the updated requirements**
-
-    pip install PyPlayStation
-
-The name of the PyPI project is different because the name *PyStation* was already taken.
-
-Forking the project is always an option too.
-
 ## **Current Features**
 - Title
 - Price (Discounted price only available for the multi options)
@@ -39,12 +30,8 @@ Forking the project is always an option too.
     -h, --help            show this help message and exit
     -s SINGLE [SINGLE ...], --single SINGLE [SINGLE ...]
                             Get a single game price and information.
-    -gs GUI_SINGLE [GUI_SINGLE ...], --gui_single GUI_SINGLE [GUI_SINGLE ...]
-                            Same as single but with gui and picture
-    -m, --multi           Get all the sale prices and titles
-    -gm, --gui_multi      Same as multi but with gui and picture
+    !!Under development and doesn't work as expected  -m, --multi           Get all the sale prices and titles
 
-Using the gui feature doesn't have any other benefit than seeing the images.
 
 In order to get your desired currency for the prices, you need to specify the country.  
 It is specified by adding **-c country** after the options and args.  

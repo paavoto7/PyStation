@@ -13,6 +13,7 @@ env.bak/
 venv.bak/
 
 .vscode/
+launch.json
 
 # A file for the the API key and search engine identifier
 constants.py
